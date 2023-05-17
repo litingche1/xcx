@@ -6,7 +6,9 @@ Page({
    * 页面的初始数据
    */
   data: {
-     videoList:[]
+     videoList:[],
+     limit:20,
+     offset:0
   },
 
   /**
@@ -17,13 +19,12 @@ Page({
   },
   async getVideoList(){
     let res=await getTopMV({
-      limit:20,
+      limit:this.data.limit,
       offset:0
     })
     this.setData({
       videoList:res.data.data
     })
-    console.log(res.data.data)
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
