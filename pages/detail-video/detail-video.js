@@ -1,6 +1,8 @@
-// pages/main-video/main-video.js
+// pages/detail-video/detail-video.js
 import {
-  getTopMV
+  getMvDetail,
+  getMvUrl,
+  getRelatedList
 } from '../../services/video'
 Page({
 
@@ -8,32 +10,41 @@ Page({
    * 页面的初始数据
    */
   data: {
-    videoList: [],
-    limit: 20,
-    offset: 0,
-    hasMore: true
-
+    mvid:'',
+    mvInfo:{},
+    mvUrl:'',
+    relatedMV:[]
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    this.getVideoList()
+    this.data.mvid=options.id
+    this.getMvDetailData()
+    this.getMvUrlData()
+    this.getRelatedData()
   },
-  async getVideoList() {
-    let res = await getTopMV({
-      limit: this.data.limit,
-      offset: this.data.offset
-    })
-    let data = [...this.data.videoList, ...res.data.data]
+  //页面网络请求
+   async getMvDetailData(){
+     let res= await getMvDetail({mvid:this.data.mvid})
+     this.setData({
+      mvInfo:res.data.data
+     })
+   },
+   async getMvUrlData(){
+    let res= await getMvUrl({id:this.data.mvid})
+    console.log(res.data.data.url)
     this.setData({
-      videoList: data
+      mvUrl:res.data.data.url
     })
-    this.data.offset = this.data.videoList.length
-    this.data.hasMore=res.data.hasMore
-    wx.stopPullDownRefresh()
-  },
+   },
+   async getRelatedData(){
+     let res= await getRelatedList({id:this.data.mvid})
+     this.setData({
+      relatedMV:res.data.data
+     })
+   },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
@@ -66,19 +77,14 @@ Page({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh() {
-    this.data.hasMore=true,
-    this.data.videoList=[]
-    this.data.offset=0
-    this.getVideoList()
+
   },
 
   /**
    * 页面上拉触底事件的处理函数
    */
   onReachBottom() {
-    if(this.data.hasMore){
-      this.getVideoList()
-    }
+
   },
 
   /**
