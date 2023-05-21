@@ -1,11 +1,11 @@
 // pages/main-music/main-music.js
 import {
   geBanner,
-  getPlaylistDetail
+  getPlaylist
 } from "../../services/music"
 import querySelect from "../../utils/query-select"
-import throttle  from '../../utils/throttle'
-
+import throttle from '../../utils/throttle'
+import recommendStore from '../../store/recommendStore'
 const querySelectThrottle = throttle(querySelect)
 const app = getApp()
 Page({
@@ -15,9 +15,11 @@ Page({
    */
   data: {
     banners: [],
-    bannerHeight:100,
-    value:"",
-    recommendSongs:[]
+    bannerHeight: 100,
+    value: "",
+    recommendSongs: [], //推荐歌曲
+    hotMenuList: [], //热门歌单
+    recMenuList:[]//推荐歌单
   },
 
   /**
@@ -25,7 +27,10 @@ Page({
    */
   onLoad(options) {
     this.geBannerData()
-this.getPlaylistDetailData()
+    recommendStore.onState('recommendSongInfo', this.getPlaylistDetailData)
+    recommendStore.dispatch('fetchRecommendSongsAction')
+    this.fetchSongMenuList()
+    // 
   },
   //页面网络请求
   async geBannerData() {
@@ -36,20 +41,40 @@ this.getPlaylistDetailData()
       banners: res.data.banners
     })
   },
-  async getPlaylistDetailData(){
-  let res=await getPlaylistDetail({id:3778678})
-  this.setData({ recommendSongs: res.data.playlist.tracks.slice(0, 6) })
+  //推荐歌曲
+  getPlaylistDetailData(val) {
+    this.setData({
+      recommendSongs: val.tracks?.slice(0, 6)
+    })
+  },
+  //热门歌单
+  //推荐歌单
+  async fetchSongMenuList() {
+    let res = await getPlaylist()
+    this.setData({
+      hotMenuList: res.data.playlists
+    })
+
+    let resData = await getPlaylist("华语")
+    this.setData({
+      recMenuList: resData.data.playlists
+    })
+
   },
   //事件监听
-  async onBannerImageLoad(){
-    let res=await querySelectThrottle(".banner-image")
-    this.setData({ bannerHeight: res[0]?.height })
+  async onBannerImageLoad() {
+    let res = await querySelectThrottle(".banner-image")
+    this.setData({
+      bannerHeight: res[0]?.height
+    })
   },
-  onSearchClick(event){
-console.log(event)
+  onSearchClick() {
+    wx.navigateTo({
+      url: '/pages/detail-search/detail-search'
+    })
   },
-  onRecommendMoreClick(){
-console.log(999)
+  onRecommendMoreClick() {
+    console.log(999)
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
