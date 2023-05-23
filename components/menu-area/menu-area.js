@@ -27,7 +27,9 @@ Component({
    */
   methods: {
     onRecommendMoreClick(){
-      console.log(9999)
+      wx.navigateTo({
+        url: '/pages/detail-menu/detail-menu',
+      })
     }
   },
   attached(){

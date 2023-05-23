@@ -1,0 +1,15 @@
+<!--components/sont-item-v2/sont-item-v2.wxml-->
+<view class="sont-item-v2">
+  <view class="index">
+    {{index}}
+  </view>
+  <view class="sont-item-cont">
+    <view class="sont-item-cont-top">
+      {{itemData.name}}
+    </view>
+    <view class="sont-item-cont-bottom">
+      <image class="icon" src="/assets/images/icons/sq_icon.png"></image>
+      <text>{{itemData.ar[0].name}}</text>
+    </view>
+  </view>
+</view>

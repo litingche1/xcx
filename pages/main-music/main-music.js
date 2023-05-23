@@ -74,7 +74,9 @@ Page({
     })
   },
   onRecommendMoreClick() {
-    console.log(999)
+    wx.navigateTo({
+      url: '/pages/detail-song/detail-song?type=recommend',
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

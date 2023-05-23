@@ -28,6 +28,11 @@ export function getPlaylist(cat = "全部", limit = 6, offset = 0) {
     }
   })
 }
+export function getSongMenuTag() {
+  return requsetServices.get({
+    url: "/playlist/hot"
+  })
+}
 // //歌单详情
 // export function getHotList(id) {
 //   return requsetServices.get({
