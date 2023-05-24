@@ -22,7 +22,10 @@ Component({
    */
   methods: {
     onMenuItemTap(){
-      console.log(9999)
+      const {id} = this.properties.itemData
+     wx.navigateTo({
+       url: `/pages/detail-song/detail-song?type=menu&id=${id}`,
+     })
     }
   }
 })

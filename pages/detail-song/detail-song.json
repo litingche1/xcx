@@ -1,5 +1,6 @@
 {
   "usingComponents": {
-    "sont-item-v2":"/components/sont-item-v2/sont-item-v2"
+    "sont-item-v2":"/components/sont-item-v2/sont-item-v2",
+    "menu-header":"/components/menu-header/menu-header"
   }
 }

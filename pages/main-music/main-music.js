@@ -6,6 +6,7 @@ import {
 import querySelect from "../../utils/query-select"
 import throttle from '../../utils/throttle'
 import recommendStore from '../../store/recommendStore'
+import rankingStore from '../../store/rankingStore'
 const querySelectThrottle = throttle(querySelect)
 const app = getApp()
 Page({
@@ -19,7 +20,10 @@ Page({
     value: "",
     recommendSongs: [], //推荐歌曲
     hotMenuList: [], //热门歌单
-    recMenuList:[]//推荐歌单
+    recMenuList: [], //推荐歌单
+    // 巅峰榜数据
+    isRankingData: false,
+    rankingInfos: {}
   },
 
   /**
@@ -28,9 +32,13 @@ Page({
   onLoad(options) {
     this.geBannerData()
     recommendStore.onState('recommendSongInfo', this.getPlaylistDetailData)
+    rankingStore.onState('newRanking', this.handleNewRanking)
+    rankingStore.onState('originRanking', this.handleOriginRanking)
+    rankingStore.onState('upRanking', this.handleUpRanking)
+    rankingStore.dispatch("fetchRankingDataAction")
     recommendStore.dispatch('fetchRecommendSongsAction')
     this.fetchSongMenuList()
-    // 
+
   },
   //页面网络请求
   async geBannerData() {
@@ -78,6 +86,47 @@ Page({
       url: '/pages/detail-song/detail-song?type=recommend',
     })
   },
+  handleNewRanking(val) {
+    console.log(val)
+    if (!val.name) return
+    this.setData({
+      isRankingData: true
+    })
+    console.log(this.data.isRankingData)
+    const newRankingInfos = {
+      ...this.data.rankingInfos,
+      newRanking: val
+    }
+    this.setData({
+      rankingInfos: newRankingInfos
+    })
+  },
+  handleOriginRanking(val) {
+    if (!val.name) return
+    this.setData({
+      isRankingData: true
+    })
+    const newRankingInfos = {
+      ...this.data.rankingInfos,
+      originRanking: val
+    }
+    this.setData({
+      rankingInfos: newRankingInfos
+    })
+  },
+  handleUpRanking(val) {
+    if (!val.name) return
+    this.setData({
+      isRankingData: true
+    })
+    const newRankingInfos = {
+      ...this.data.rankingInfos,
+      upRanking: val
+    }
+    this.setData({
+      rankingInfos: newRankingInfos
+    })
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
@@ -103,7 +152,10 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload() {
-
+    recommendStore.offState('recommendSongInfo', this.getPlaylistDetailData)
+    rankingStore.offState('newRanking', this.handleNewRanking)
+    rankingStore.offState('originRanking', this.handleOriginRanking)
+    rankingStore.offState('upRanking', this.handleUpRanking)
   },
 
   /**

@@ -61,7 +61,7 @@ Page({
       id: this.data.id
     })
     this.setData({
-      songInfo: res.playlist
+      songInfo: res.data.playlist
     })
   },
   /**

@@ -15,7 +15,7 @@ const rankingStore=new HYEventStore({
   },
   actions:{
     fetchRankingDataAction(ctx){
-      for(key in rankingsMap){
+      for(const key in rankingsMap){
         getPlaylistDetail({id:rankingsMap[key]}).then(res=>{
           ctx[key]=res.data.playlist
         })
