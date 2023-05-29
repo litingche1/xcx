@@ -7,6 +7,7 @@ import querySelect from "../../utils/query-select"
 import throttle from '../../utils/throttle'
 import recommendStore from '../../store/recommendStore'
 import rankingStore from '../../store/rankingStore'
+import playerStore from '../../store/playerStore'
 const querySelectThrottle = throttle(querySelect)
 const app = getApp()
 Page({
@@ -23,7 +24,10 @@ Page({
     recMenuList: [], //推荐歌单
     // 巅峰榜数据
     isRankingData: false,
-    rankingInfos: {}
+    rankingInfos: {},
+       // 当前正在播放的歌曲信息
+       currentSong: {},
+       isPlaying: false
   },
 
   /**
@@ -38,7 +42,7 @@ Page({
     rankingStore.dispatch("fetchRankingDataAction")
     recommendStore.dispatch('fetchRecommendSongsAction')
     this.fetchSongMenuList()
-
+    playerStore.onStates(["currentSong", "isPlaying"], this.handlePlayInfos)
   },
   //页面网络请求
   async geBannerData() {
@@ -127,6 +131,29 @@ Page({
       rankingInfos: newRankingInfos
     })
   },
+  handlePlayInfos({ currentSong, isPlaying }) {
+    if (currentSong) {
+      this.setData({ currentSong })
+    }
+    if (isPlaying !== undefined) {
+      this.setData({ isPlaying })
+    }
+  },
+
+  onSongItemTap(event) {
+    const index = event.currentTarget.dataset.index
+    playerStore.setState("playSongList", this.data.recommendSongs)
+    playerStore.setState("playSongIndex", index)
+  
+  },
+  onPlayBarAlbumTap() {
+    wx.navigateTo({
+      url: '/pages/music-player/music-player',
+    })
+  },
+  onPlayOrPauseBtnTap() {
+    playerStore.dispatch("changeMusicStatusAction")
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
@@ -156,6 +183,7 @@ Page({
     rankingStore.offState('newRanking', this.handleNewRanking)
     rankingStore.offState('originRanking', this.handleOriginRanking)
     rankingStore.offState('upRanking', this.handleUpRanking)
+    playerStore.offStates(["currentSong", "isPlaying"], this.handlePlayInfos)
   },
 
   /**

@@ -7,6 +7,6 @@
 </view>
 <view class="song-list"> 
   <block wx:for="{{songInfo.tracks}}" wx:key="id">
-  <sont-item-v2 itemData="{{item}}" index="{{index+1}}"></sont-item-v2>
+  <sont-item-v2 itemData="{{item}}" index="{{index+1}}"       bindtap="onSongItemTap"></sont-item-v2>
   </block>
 </view>

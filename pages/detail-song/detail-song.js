@@ -1,5 +1,6 @@
 import recommendStore from "../../store/recommendStore"
 import rankingStore from "../../store//rankingStore"
+import playerStore from '../../store/playerStore'
 import {
   getPlaylistDetail
 } from "../../services/music"
@@ -48,6 +49,10 @@ Page({
       this.fetchMenuSongInfo()
     }
   },
+    // ================== wxml事件监听 ==================
+    onSongItemTap() {
+      playerStore.setState("playSongList", this.data.songInfo.tracks)
+    },
   handleRanking(val) {
     this.setData({
       songInfo: val

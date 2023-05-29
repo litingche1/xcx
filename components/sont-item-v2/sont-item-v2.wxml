@@ -1,5 +1,5 @@
 <!--components/sont-item-v2/sont-item-v2.wxml-->
-<view class="sont-item-v2">
+<view class="sont-item-v2" bindtap="onSongItemTap">
   <view class="index">
     {{index}}
   </view>
